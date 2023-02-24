@@ -1,8 +1,10 @@
 #include <iostream>
 #include <string>
 #include <cstring>
+#include <exception>
 #include "mtools.h"
 #include "config.h"
+
 
 /**
  * 程序运行模式
@@ -23,8 +25,8 @@ class CommandArgs{
     public:
     RunningMode mode = RunningMode::astWalker;  //运行模式
     
-    std::string fileNameWithoutPostfix = NULL;     //文件名称，不带后缀的版本
-    std::string fileName = NULL;     //文件名称，可以是.ts或.bc
+    std::string fileNameWithoutPostfix ;     //文件名称，不带后缀的版本
+    std::string fileName ;     //文件名称，可以是.ts或.bc
 
     bool verbose = false;         //显示详细的调试信息
 }
@@ -66,7 +68,7 @@ CommandArgs * parseCommandArgs(int argc, char* argv[]){
 
     if (argc < 3) {
         std::cout << "请输入文件名称。" << std::endl;
-        std::cout << "用\"node play --help\"来显示更多帮助信息。" << std::endl;
+        std::cout << "用\"play --help\"来显示更多帮助信息。" << std::endl;
         return nullptr;
     }
 
@@ -152,16 +154,19 @@ CommandArgs * parseCommandArgs(int argc, char* argv[]){
 
 int main(int argc, char* argv[]) {
     std::cout << "Hello, World!" << std::endl;
-    //解析命令行参数并运行
-    CommandArgs * args = parseCommandArgs(argc,argv);
-    if (&args == nullptr) return 0;
-    
-    if (args->mode == RunningMode::help){
-        showHelp();
+    try{
+        //解析命令行参数并运行
+        CommandArgs * args = parseCommandArgs(argc,argv);
+        if (args == nullptr) return 0;
+        
+        if (args->mode == RunningMode::help){
+            showHelp();
+        }
+        else{
+            // compileAndRun(args);
+        }
+    }catch (std::exception& e) {
+        std::cout << "Exception caught: " << e.what() << std::endl;
     }
-    else{
-        // compileAndRun(args);
-    }
-
     return 0;
 }
